@@ -68,7 +68,7 @@ class App extends Component {
       username: event.target.value,
     });
   }
-  
+
   passwordChange = (event) => {
     this.setState({
       password: event.target.value,
@@ -82,6 +82,26 @@ class App extends Component {
       username: this.state.username,
       password: this.state.password,
       image: canvas.toDataURL(),
+    });
+    fetch('http://login.hwat-auth.com:9099/create_account', {
+      method: "POST", 
+      mode: "cors",
+      headers: {
+          "Content-Type": "text/plain",
+      },
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password,
+        handwriting: canvas.toDataURL(),
+      }),
+    }).then(() => {
+      alert('Saved');
+      this.state.username = '';
+      this.state.password = '';
+      const canvas = this.paintCanvas.current;
+      canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+    }).catch(error => {
+      console.error(error);
     });
   }
 
