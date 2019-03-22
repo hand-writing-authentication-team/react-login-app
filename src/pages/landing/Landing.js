@@ -2,10 +2,15 @@ import './landing.css';
 
 import React, {Component} from 'react';
 import Card from '../../components/card/Card';
+import {withRouter} from "react-router-dom";
 
 class Landing extends Component {
   constructor(props) {
     super(props);
+  }
+
+  redirectToLogin = () => {
+    this.props.history.push('/login');
   }
 
   render() {
@@ -18,10 +23,10 @@ class Landing extends Component {
             <p>3. You may choose not to disclose your ethnicity.</p>
         </div>
 
-        <input type="submit" class="login login-submit" value="Login" onClick={() => window.location.href='/login'}></input>
+        <input type="submit" class="login login-submit" value="Login" onClick={this.redirectToLogin}></input>
       </Card>
     );
   }
 }
 
-export default Landing;
+export default withRouter(Landing);

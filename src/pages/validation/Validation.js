@@ -3,7 +3,7 @@ import './validation.css';
 import React, {Component} from 'react';
 import {Canvas} from '../../components/canvas/canvas';
 import Card from '../../components/card/Card';
-
+import {withRouter} from "react-router-dom";
 
 class Validation extends Component {
   constructor(props) {
@@ -44,6 +44,11 @@ class Validation extends Component {
     });
   }
 
+  logout = () => {
+    window.localStorage.setItem('username', '');
+    this.props.history.push('/login');
+  }
+  
   render() {
     return (
       <Card title="Validation">
@@ -52,12 +57,12 @@ class Validation extends Component {
             <input type="submit" name="login" class="login login-submit" value="Login" onClick={this.formSubmit}></input>
         </form>
 
-        <div class="login-help">
-            <a href="/">Some other link</a>
+        <div class="validation-sign-out">
+            <a onClick={this.logout}>Sign out</a>
         </div>
       </Card>
     );
   }
 }
 
-export default Validation;
+export default withRouter(Validation);

@@ -11,7 +11,9 @@ class Login extends Component {
     this.state = {
       username: '',
       password: '',
+      race: 'Race',
       handwriting: '',
+      errorMessage: '',
     };
     this.canvas = React.createRef();
   }
@@ -34,13 +36,23 @@ class Login extends Component {
     });
   }
 
+  raceChange = (event) => {
+    this.setState({
+      race: event.target.value,
+    });
+  }
+
+  clear = () => {
+    this.setState({
+      username: '',
+      password: '',
+      race: 'Race'
+    });
+    this.canvas.current.clear();
+  }
+
   formSubmit = (event) => {
     event.preventDefault();
-    console.log({
-      username: this.state.username,
-      password: this.state.password,
-      handwriting: this.state.handwriting,
-    });
     fetch('http://login.hwat-auth.com:9099/create_account', {
       method: "POST", 
       mode: "cors",
@@ -50,17 +62,23 @@ class Login extends Component {
       body: JSON.stringify({
         username: this.state.username,
         password: this.state.password,
+        race: this.state.race,
         handwriting: this.state.handwriting,
       }),
-    }).then(() => {
-      alert('Saved');
-      window.localStorage.setItem("username", this.state.username);
-      this.setState({
-        username: '',
-        password: '',
-      });
-      this.canvas.current.clear();
-      this.props.history.push('/validation');
+    }).then(response => {
+      if (response.ok) {
+        window.localStorage.setItem("username", this.state.username);
+        this.props.history.push('/validation');
+        return '';
+      } else {
+        return response.json();
+      }
+    }).then(payload => {
+      if (payload) {
+        this.setState({
+          errorMessage: payload.error,
+        });
+      }
     }).catch(error => {
       console.error(error);
     });
@@ -75,16 +93,26 @@ class Login extends Component {
           <p>3. NEVER submit your REAL password to this page.</p>
           <p>4. Your Email address will ONLY be used for our $25 Gift Card lottery.</p>
         </div>
-        <form>
-            <input type="text" name="user" placeholder="Username" value={this.state.username} onChange={this.usernameChange}></input>
+        <form class="login-form">
+          <select value={this.state.race} onChange={this.raceChange}>
+              <option value="Race" disabled>-- Select your race --</option>
+              <option value="American-Indian-or-Alaska-Native">American Indian or Alaska Native</option>
+              <option value="Asian">Asian</option>
+              <option value="Black-or-African-American">Black or African American</option>
+              <option value="Native-Hawaiian-or-Other-Pacific-Islander">Native Hawaiian or Other Pacific Islander</option>
+              <option value="White">White</option>
+              <option value="Other">Other</option>
+          </select>
+            <input type="text" name="user" placeholder="Email Address" value={this.state.username} onChange={this.usernameChange}></input>
             <input type="password" name="pass" placeholder="Password" value={this.state.password} onChange={this.passwordChange}></input>
             <Canvas ref={this.canvas} updateHandwriting={this.updateHandwriting.bind(this)}/>
             <input type="submit" name="login" class="login login-submit" value="Login" onClick={this.formSubmit}></input>
+            <input type="button" name="reset" class="login login-submit" value="Reset" onClick={this.clear}></input>
         </form>
 
-        <div class="login-help">
-            <a href="/">Some other link</a>
-        </div>
+        {this.state.errorMessage ? <div class="login-page error-msg">
+            <span>{this.state.errorMessage}</span>
+        </div> : ''}
       </Card>
     );
   }
