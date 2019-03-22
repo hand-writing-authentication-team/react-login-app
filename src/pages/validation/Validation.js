@@ -2,6 +2,7 @@ import './validation.css';
 
 import React, {Component} from 'react';
 import {Canvas} from '../../components/canvas/canvas';
+import Card from '../../components/card/Card';
 
 
 class Validation extends Component {
@@ -45,19 +46,16 @@ class Validation extends Component {
 
   render() {
     return (
-      <div className='App'>
-        <div class="login-card">
-            <h1>Validation</h1><br></br>
-            <form>
-                <Canvas ref={this.canvas} updateHandwriting={this.updateHandwriting.bind(this)}/>
-                <input type="submit" name="login" class="login login-submit" value="Login" onClick={this.formSubmit}></input>
-            </form>
+      <Card title="Validation">
+        <form>
+            <Canvas ref={this.canvas} updateHandwriting={this.updateHandwriting.bind(this)}/>
+            <input type="submit" name="login" class="login login-submit" value="Login" onClick={this.formSubmit}></input>
+        </form>
 
-            <div class="login-help">
-                <a href="/">Some other link</a>
-            </div>
+        <div class="login-help">
+            <a href="/">Some other link</a>
         </div>
-    </div>
+      </Card>
     );
   }
 }

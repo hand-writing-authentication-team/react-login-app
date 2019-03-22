@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import './canvas.css';
 
 export class Canvas extends Component {
     constructor(props) {

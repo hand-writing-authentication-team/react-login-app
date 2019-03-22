@@ -7,27 +7,29 @@ import {
 import React, {Component} from 'react';
 import Login from './pages/login/Login';
 import Validation from './pages/validation/Validation';
+import Landing from './pages/landing/Landing'
 
-export default class App extends Component {
+import "./app.css";
+
+class App extends Component {
+    renderSwitch = () => {
+        if (window.localStorage.getItem('username')) {
+            return (<Redirect to={{pathname: "/validation"}}/>);
+        } else {
+            return (<Redirect to={{pathname: "/landing"}}/>);
+        }
+    }
+    
     render() {
-    return (
-        <Router>
-            <div>
-            <ul hidden>
-                <li>
-                <Link to="/login">Login</Link>
-                </li>
-                <li>
-                <Link to="/validation">Validation</Link>
-                </li>
-            </ul>
-            <Route path="/login" component={Login} />
-            <Route path="/validation" component={Validation} />
-            <Route exact path="/" render={() => 
-                <Redirect to={{pathname: "/login",}}/>
-            } />
-            </div>
-        </Router>
+        return (
+            <Router>
+                <Route path="/login" component={Login} />
+                <Route path="/validation" component={Validation} />
+                <Route path="/landing" component={Landing} />
+                <Route exact path="/" render={this.renderSwitch} />
+            </Router>
         );
     }
 }
+
+export default App;
