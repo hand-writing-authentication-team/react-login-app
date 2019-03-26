@@ -44,6 +44,7 @@ export class Canvas extends Component {
 
     handleMouseMove =
         (event) => {
+            event.preventDefault();
             const nextMousePosition = this.getEventPosition(event);
             this.setState({
                 last_mouse: this.state.mouse,
