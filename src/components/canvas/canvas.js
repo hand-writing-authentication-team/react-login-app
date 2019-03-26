@@ -13,7 +13,7 @@ export class Canvas extends Component {
                 x: 0,
                 y: 0
             },
-
+            shouldPaint: false,
         };
         this.paintCanvas = React.createRef();
         this.sketchDiv = React.createRef();
@@ -32,38 +32,50 @@ export class Canvas extends Component {
         ctx.lineCap = 'round';
         ctx.strokeStyle = 'black';
     }
+    
+    getEventPosition = (event) => {
+        event = event.touches ? event.touches[0] : event;
+        const canvas = this.paintCanvas.current;
+        return {
+            x: event.pageX - canvas.offsetLeft,
+            y: event.pageY - canvas.offsetTop,
+        };
+    }
 
     handleMouseMove =
-        (mouseEvent) => {
-            const canvas = this.paintCanvas.current;
+        (event) => {
+            const nextMousePosition = this.getEventPosition(event);
             this.setState({
-                last_mouse: this.state.mouse
-            });
-            const nextMousePosition = {
-                x: mouseEvent.pageX - canvas.offsetLeft,
-                y: mouseEvent.pageY - canvas.offsetTop,
-            };
-            this.setState({
+                last_mouse: this.state.mouse,
                 mouse: nextMousePosition
             });
+            this.onPaint();
         }
 
     handleMouseDown =
-        () => {
-            this.paintCanvas.current.addEventListener(
-                'mousemove', this.onPaint, false);
+        (event) => {
+            const eventPosition = this.getEventPosition(event);
+            this.setState({
+                shouldPaint: true,
+                mouse: eventPosition,
+                last_mouse: eventPosition,
+            });
         }
 
     handleMouseUp =
         () => {
             const canvas = this.paintCanvas.current;
             this.props.updateHandwriting(canvas.toDataURL());
-            this.paintCanvas.current.removeEventListener(
-                'mousemove', this.onPaint, false);
+            this.setState({
+                shouldPaint: false,
+            })
         }
 
     onPaint =
         () => {
+            if (!this.state.shouldPaint) {
+                return;
+            }
             const canvas = this.paintCanvas.current;
             const ctx = canvas.getContext('2d');
             ctx.beginPath();
@@ -82,8 +94,11 @@ export class Canvas extends Component {
         return (
             <div class='container'>
                 <div class="password-container" ref={this.sketchDiv}>
-                <canvas ref={this.paintCanvas} onMouseMove={this.handleMouseMove} onMouseDown={this.handleMouseDown}
-                        onMouseUp={this.handleMouseUp} onMouseLeave={this.handleMouseUp} onMouseOut={this.handleMouseUp}>
+                <canvas ref={this.paintCanvas} 
+                        onMouseMove={this.handleMouseMove} onTouchMove={this.handleMouseMove}
+                        onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp}
+                        onTouchStart={this.handleMouseDown} onTouchEnd={this.handleMouseUp}
+                        onMouseLeave={this.handleMouseUp} onMouseOut={this.handleMouseUp} onTouchCancel={this.handleMouseUp}>
                 </canvas>
                 </div>
                 <div class="password-text">Draw your password character here</div> 
