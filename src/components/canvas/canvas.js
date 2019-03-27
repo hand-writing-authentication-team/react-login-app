@@ -95,14 +95,14 @@ export class Canvas extends Component {
         return (
             <div class='container'>
                 <div class="password-container" ref={this.sketchDiv}>
-                <canvas ref={this.paintCanvas} 
-                        onMouseMove={this.handleMouseMove} onTouchMove={this.handleMouseMove}
-                        onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp}
-                        onTouchStart={this.handleMouseDown} onTouchEnd={this.handleMouseUp}
-                        onMouseLeave={this.handleMouseUp} onMouseOut={this.handleMouseUp} onTouchCancel={this.handleMouseUp}>
-                </canvas>
+                    <div class="password-text">Draw your password character below. You can place your screen horizontally.</div> 
+                    <canvas ref={this.paintCanvas} 
+                            onMouseMove={this.handleMouseMove} onTouchMove={this.handleMouseMove}
+                            onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp}
+                            onTouchStart={this.handleMouseDown} onTouchEnd={this.handleMouseUp}
+                            onMouseLeave={this.handleMouseUp} onMouseOut={this.handleMouseUp} onTouchCancel={this.handleMouseUp}>
+                    </canvas>
                 </div>
-                <div class="password-text">Draw your password character here</div> 
             </div>
         );
     }

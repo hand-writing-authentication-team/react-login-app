@@ -23,22 +23,31 @@ class Validation extends Component {
   formSubmit = (event) => {
     event.preventDefault();
     console.log({
-      username: window.localStorage.getItem('username') | '',
+      username: window.localStorage.getItem('username') || '',
       handwriting: this.state.handwriting,
     });
-    fetch('http://login.hwat-auth.com:9099/create_account', {
+    fetch('http://login.hwat-auth.com:9099/collect_second', {
       method: "POST", 
       mode: "cors",
       headers: {
           "Content-Type": "text/plain",
       },
       body: JSON.stringify({
-        username: window.localStorage.getItem('username') | '',
+        username: window.localStorage.getItem('username') || '',
         handwriting: this.state.handwriting,
       }),
-    }).then(() => {
-      alert('Saved');
-      this.canvas.current.clear();
+    }).then(response => {
+      if (response.ok) {
+        alert('Verified');
+      } else {
+        return response.json();
+      }
+    }).then(payload => {
+      if (payload) {
+        this.setState({
+          errorMessage: payload.error,
+        });
+      }
     }).catch(error => {
       console.error(error);
     });
@@ -46,9 +55,9 @@ class Validation extends Component {
 
   logout = () => {
     window.localStorage.setItem('username', '');
-    this.props.history.push('/login');
+    this.props.history.push('/landing');
   }
-  
+
   render() {
     return (
       <Card title="Validation">
