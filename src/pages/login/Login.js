@@ -92,6 +92,7 @@ class Login extends Component {
           <p>2. If you no longer want us to use your data after submitting, feel free to contact us. We will remove your data from our database immediately.</p>
           <p>3. NEVER submit your REAL password to this page.</p>
           <p>4. Your Email address will ONLY be used for our $25 Gift Card lottery.</p>
+          <p>5. You need to <b>rotate your device horizontally</b> and draw your password on the canvas.</p>
         </div>
         <form class="login-form">
           <select value={this.state.race} onChange={this.raceChange}>
